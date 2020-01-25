@@ -4,20 +4,24 @@ import './App.css';
 import dotenv from 'dotenv';
 import GridDisplay from './components/gridDisplay';
 import Simulator from './models/simulator';
+import SimulatorContextProvider, { useSettings } from './context/simulatorSettingsContext';
 
 dotenv.config();
-const sideLength = 32;
-const maxFood = 20;
+const sideLength = 8;
+const maxFood = 15;
 
 const App: React.FC = () => {
-  const simulator  = useState(new Simulator(sideLength, maxFood))[0];
+  const {settings} = useSettings();
+  const simulator  = useState(new Simulator(sideLength, maxFood, settings))[0];
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <GridDisplay simulator={simulator} />
-      </header>
+      <SimulatorContextProvider>
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <GridDisplay simulator={simulator} />
+        </header>
+      </SimulatorContextProvider>
     </div>
   );
 }

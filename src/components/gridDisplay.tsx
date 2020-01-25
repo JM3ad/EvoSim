@@ -3,28 +3,42 @@ import Simulator from '../models/simulator';
 import Tile from './tile';
 import './grid.css';
 import _ from 'lodash';
+import SimSettings from './simSettings';
+import { useSettings } from '../context/simulatorSettingsContext';
 
 interface GridParams {
   simulator: Simulator
 }
 
 const GridDisplay: React.FC<GridParams> = (params: GridParams) => {
-    const [simulator] = useState(params.simulator);
-    const [grid, updateGrid] = useState(params.simulator.grid);
-    const [herbivores, updateHerbivores] = useState(params.simulator.herbivores);
+    const [simulator, setSimulator] = useState(params.simulator);
+    const {settings} = useSettings();
+    const [grid, setGrid] = useState(params.simulator.grid);
+    const [herbivores, setHerbivores] = useState(params.simulator.herbivores);
     const [carnivores, setCarnivores] = useState(params.simulator.carnivores);
+    const [currentInterval, setCurrentInterval] = useState(0);
 
     useEffect(() => {
       const moveGameLoop = () => {
         simulator.passTurn();
-        updateGrid(simulator.grid);
-        updateHerbivores(simulator.herbivores);
+        setGrid(simulator.grid);
+        setHerbivores(simulator.herbivores);
         setCarnivores(simulator.carnivores);
       }
 
       console.log("Starting game loop");
-      window.setInterval(moveGameLoop, 1000);
+      window.clearInterval(currentInterval);
+      setCurrentInterval(window.setInterval(moveGameLoop, 1000));
     }, [simulator]);
+
+    useEffect(() => {
+      console.log("Settings update");
+      simulator.updateSettings(settings);
+    }, [settings, simulator]);
+
+    const restartSimulator = () => {
+      setSimulator(simulator.getFreshSimulator());
+    }
 
     const getTiles = () => {
       const positions = simulator.grid.getPositions().sort((a, b) => {
@@ -59,6 +73,7 @@ const GridDisplay: React.FC<GridParams> = (params: GridParams) => {
   return (
     <div className="grid">
       {getTiles()}
+      <SimSettings restartSimulator={restartSimulator} />
     </div>
   );
 }

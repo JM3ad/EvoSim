@@ -3,7 +3,7 @@ class Tile {
     maxFood: number;
 
     constructor(maxFood: number) {
-        this.food = 0;
+        this.food = maxFood / 2;
         this.maxFood = maxFood;
     }
 

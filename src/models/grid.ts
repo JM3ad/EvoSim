@@ -4,9 +4,11 @@ import Position from "./position";
 class Grid {
     sideLength: number;
     grid: Map<number, Tile>;
+    maxFood: number;
 
     constructor(sideLength: number, maxFood: number) {
         this.sideLength = sideLength;
+        this.maxFood = maxFood;
         this.grid = new Map();
         for (let x = 0; x < this.sideLength; x++) {
             for (let y = 0; y < this.sideLength; y++) {

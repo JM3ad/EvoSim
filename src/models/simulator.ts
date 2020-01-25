@@ -3,9 +3,10 @@ import Grid from "./grid";
 import Animal from "./animal";
 import getOffspring from "../services/breedingService";
 import _ from "lodash";
+import { SimulatorSettings } from "../context/simulatorSettingsContext";
 
 // For now, hardcode starting animal settings
-const STARTING_LIFESPAN = 30;
+const STARTING_LIFESPAN = 30.;
 const STARTING_HEIGHT = 2;
 const STARTING_SPEED = 2;
 const STARTING_DESIRE = 0.1;
@@ -15,12 +16,18 @@ class Simulator {
     herbivores: Animal[];
     carnivores: Animal[];
     turnCount: number;
+    settings: SimulatorSettings;
 
-    constructor(sideLength: number, maxFood: number) {
+    constructor(sideLength: number, maxFood: number, settings: SimulatorSettings) {
         this.grid = new Grid(sideLength, maxFood);
         this.herbivores = [this.getStartingAnimal(), this.getStartingAnimal()];
         this.carnivores = [];
         this.turnCount = 0;
+        this.settings = settings;
+    }
+
+    getFreshSimulator = (): Simulator => {
+        return new Simulator(this.grid.sideLength, this.grid.maxFood, this.settings);
     }
 
     getStartingCarnivore(): Animal {
@@ -48,6 +55,8 @@ class Simulator {
     passTurn = () => {
         this.turnCount++;
         this.increaseFood();
+        this.animalsMoveRandomly(this.herbivores);
+        this.animalsMoveTowardsHerbivores(this.carnivores);
         this.herbivoresEat();
         this.carnivoresEat();
         this.animalsExist();
@@ -55,14 +64,16 @@ class Simulator {
         this.possiblySpawnCarnivore();
         this.animalsMate(this.herbivores);
         this.animalsMate(this.carnivores);
-        this.animalsMoveRandomly(this.herbivores);
-        this.animalsMoveTowardsHerbivores(this.carnivores);
         this.printStats();
+    }
+
+    updateSettings = (settings: SimulatorSettings) => {
+        this.settings = settings;
     }
 
     printStats = () => {
         if(this.turnCount % 10 !== 0) {
-            //return; 
+            return; 
         }
         console.log("There are currently: " + this.herbivores.length + " herbivores")
 
@@ -114,10 +125,9 @@ class Simulator {
         this.carnivores.forEach((carnivore) => {
             const herbivoresAtLocation = this.herbivores.filter((herb) => herb.isAt(carnivore.position));
             herbivoresAtLocation.forEach((herb) => {
-                console.log("Carnivore eating");
-                if (carnivore.height > herb.height) {
-                    carnivore.eatFood(herb.height * 6);
-                    // this will kill the herb for now
+                if (carnivore.height >= herb.height) {
+                    carnivore.eatFood(herb.height * this.settings.carnivoreFoodEfficiency);
+                    // this will kill the herb for now, better patterns exist
                     herb.eatFood(-herb.food);
                 }
             });
@@ -179,7 +189,7 @@ class Simulator {
     // Currently asexual reproduction
     animalsMate = (animals: Animal[]) => {
         animals.filter((animal) => 
-            animal.getFood() > animal.getFoodConsumptionPerTurn() * 4
+            animal.getFood() > animal.getFoodConsumptionPerTurn() * this.settings.offspringDelay
         ).forEach((animal) => {
             const random = Math.random();
             if (random < animal.desire) {

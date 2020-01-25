@@ -31,9 +31,17 @@ const Tile: React.FC<tileParams> = (params: tileParams) => {
         opacity: hasHerbivore || hasCarnivore ? 1 : tileFoodToMaxRatio
     };
 
+    const getFoodDisplay = () => {
+      if (hasCarnivore) {
+        return carnivores[0].food;
+      }
+      return hasHerbivore ? herbivores[0].food : tile.getFood();
+    }
+
+  // Would be nice if we could see food per animal, and only have 1 per tile
   return (
     <div className={classname} style={tileStyle}>
-      {herbivores.length}
+      {getFoodDisplay()}
     </div>
   );
 }

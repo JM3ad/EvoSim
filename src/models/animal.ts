@@ -26,7 +26,7 @@ class Animal {
         this.height = height;        
         this.age = 0;
         // to be passed in?
-        this.food = this.getFoodConsumptionPerTurn() * 4;
+        this.food = this.getFoodConsumptionPerTurn() * 3;
     }
 
     getFood(): number {
@@ -51,7 +51,7 @@ class Animal {
     }
 
     getFoodConsumptionPerTurn() {
-        return this.height * this.speed;
+        return this.height * this.height * this.speed;
     }
 
     isAlive() {
