@@ -1,6 +1,5 @@
 # Initial Setup
 
-
 ## Frontend
 - Generate the app:
   - `npx create-react-app <APP-NAME> --template typescript`
