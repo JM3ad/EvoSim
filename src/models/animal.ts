@@ -11,7 +11,14 @@ class Animal {
     desire: number;
     food: number;
 
-    constructor(name: string, position: Position, height: number, speed: number, lifespan: number, desire: number) {
+    constructor(
+        name: string,
+        position: Position,
+        height: number,
+        speed: number,
+        lifespan: number,
+        desire: number
+        ) {
         this.name = name;
         this.position = position;
         this.speed = speed;
@@ -37,6 +44,11 @@ class Animal {
 
     passTurn() {
         this.age++;
+        this.food -= this.getFoodConsumptionPerTurn();
+    }
+
+    getFoodConsumptionPerTurn() {
+        return this.height * this.speed;
     }
 
     isAlive() {

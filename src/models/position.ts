@@ -11,7 +11,13 @@ class Position {
     }
 
     getHashCode(): number {
-        return this.x * 1000 + this.y * 1000;
+        return this.x * 1000 + this.y;
+    }
+
+    static getPositionFromHashCode(hash: number): Position {
+        const x = Math.floor(hash / 1000);
+        const y = hash % 1000;
+        return new Position(x, y);
     }
 }
 
