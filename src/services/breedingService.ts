@@ -4,11 +4,37 @@ const getOffspring = (animal: Animal) => {
     return new Animal(
         animal.name,
         animal.position,
-        animal.height * getRandomBetween(0.9, 1.1),
-        animal.speed * getRandomBetween(0.9, 1.1),
-        animal.lifespan * getRandomBetween(0.9, 1.1),
-        animal.desire * getRandomBetween(0.9, 1.1)
+        mutateInt(animal.height),
+        mutateInt(animal.speed),
+        mutateInt(animal.lifespan),
+        mutateRatio(animal.desire)
     );
+}
+
+const mutateInt = (num: number) => {
+    const random = getRandomBetween(0, 100);
+    if (random < 10) {
+        return Math.max(1, num - 1);
+    }
+
+    if (random > 90) {
+        return num + 1;
+    }
+
+    return num;
+}
+
+const mutateRatio = (num: number) => {
+    const random = getRandomBetween(0, 100);
+    if (random < 10) {
+        return Math.max(1, num - 0.1);
+    }
+
+    if (random > 90) {
+        return num + 0.1;
+    }
+
+    return num;
 }
 
 const getRandomBetween = (lower: number, upper: number) => {

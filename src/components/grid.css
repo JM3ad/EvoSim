@@ -1,0 +1,9 @@
+.grid{
+  background-color: white;
+  width: 70%;
+  margin: auto;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

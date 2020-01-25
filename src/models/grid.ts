@@ -16,6 +16,11 @@ class Grid {
         }
     }
 
+    // better way to store this? 
+    getPositions = () => {
+        return Array.from(this.grid).map(([key, value]) => Position.getPositionFromHashCode(key));
+    }
+
     getTileAt = (position: Position) => {
         const tile = this.grid.get(position.getHashCode());
         if (!tile) {

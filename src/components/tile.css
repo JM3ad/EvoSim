@@ -1,0 +1,14 @@
+.tile {
+  width: 20px;
+  height: 20px;
+  background-color: green;
+  flex: "1 0 2%";
+}
+
+.herbivore {
+  background-color: blue;
+}
+
+.carnivore {
+  background-color: black;
+}
